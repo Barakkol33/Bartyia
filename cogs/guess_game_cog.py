@@ -11,6 +11,7 @@ from model.guess_game import GuessGame, NoMoreDefinitionsException
 
 class GuessGameCog(commands.Cog):
     LOGIN_MESSAGE = "Logged in as {}"
+    MINIMUM_PLAYERS_COUNT = 2
 
     def __init__(self, bot: commands.Bot):
         super(GuessGameCog, self).__init__()
@@ -41,7 +42,7 @@ class GuessGameCog(commands.Cog):
         game = self.__guess_games_by_voice_channels[voice_channel]
         players = [DiscordGuessGamePlayer(member) for member in voice_channel.members if not member.bot]
 
-        if len(players) < 2:
+        if len(players) < self.MINIMUM_PLAYERS_COUNT:
             await context.send("Do you want to ask yourself questions? We don't have enough players in the channel...")
             return
 
