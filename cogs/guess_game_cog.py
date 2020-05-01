@@ -42,7 +42,7 @@ class GuessGameCog(commands.Cog):
         players = [DiscordGuessGamePlayer(member) for member in voice_channel.members if not member.bot]
 
         if len(players) < 2:
-            await context.send("Do you want to guess your own figure? We don't have enough players in the channel...")
+            await context.send("Do you want to ask yourself questions? We don't have enough players in the channel...")
             return
 
         try:
