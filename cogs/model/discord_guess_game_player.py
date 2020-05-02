@@ -21,7 +21,8 @@ class DiscordGuessGamePlayer(IPlayer):
         return self.__member
 
     async def send_personal_round(self, game_round: Round):
-        to_send = f"The figures for Round #{game_round.round_number}:\r\n"
+        to_send = f"The figures for Round #{game_round.round_number}:\n"
+
         for player, definition in game_round.definitions_by_players.items():
             if isinstance(player, DiscordGuessGamePlayer):
                 if player is not self:
