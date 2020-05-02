@@ -31,6 +31,10 @@ class GuessGameCog(commands.Cog):
 
     @commands.command()
     async def new_game(self, context: Context):
+        if not context.author.voice:
+            await context.send("You should be inside a voice channel if you want to create a new game!")
+            return
+
         voice_channel: VoiceChannel = context.author.voice.channel
         self.__guess_games_by_voice_channels[voice_channel] = GuessGame(self.__definitions)
 
@@ -38,7 +42,15 @@ class GuessGameCog(commands.Cog):
 
     @commands.command()
     async def start_round(self, context: Context):
+        if not context.author.voice:
+            await context.send("You should be inside a voice channel if you want to start a round!")
+            return
+
         voice_channel: VoiceChannel = context.author.voice.channel
+
+        if voice_channel not in self.__guess_games_by_voice_channels:
+            await self.new_game(context)
+
         game = self.__guess_games_by_voice_channels[voice_channel]
         players = [DiscordGuessGamePlayer(member) for member in voice_channel.members if not member.bot]
 
@@ -52,3 +64,21 @@ class GuessGameCog(commands.Cog):
                                f"Everybody, check your inbox!")
         except NoMoreDefinitionsException:
             await context.send("I'm out of figures to distribute... Please start a new game!")
+
+    @commands.command()
+    async def end(self, context: Context):
+        if not context.author.voice:
+            await context.send("Do you want to end the world? COVID-19 is already doing that... You should be inside "
+                               "a voice channel in order to end a game!")
+            return
+
+        voice_channel = context.author.voice.channel
+
+        if voice_channel not in self.__guess_games_by_voice_channels:
+            await context.send("Do you want to end something that does not exist? Ask Shredinger about that, he got "
+                               "the answers...")
+            return
+
+        del self.__guess_games_by_voice_channels[voice_channel]
+
+        await context.send("The Game is Over!")
